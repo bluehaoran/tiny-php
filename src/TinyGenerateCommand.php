@@ -19,16 +19,22 @@ class TinyGenerateCommand extends Command
 
     public function fire()
     {
-        list($path, $contents) = $this->getKeyFile();
-
         $key = Tiny::generate_set();
+        
+        $path = base_path('.env');
 
-        $contents = str_replace($this->laravel['config']['league/tiny::key'], $key, $contents);
-
-        $this->files->put($path, $contents);
-
-        $this->laravel['config']['league/tiny::key'] = $key;
-
+        if (file_exists($path) && getenv('LEAGUE_TINY_KEY') !== false) {
+            //Already set, so replace it.
+            file_put_contents($path, str_replace(
+                'LEAGUE_TINY_KEY='.getenv('LEAGUE_TINY_KEY'), 'LEAGUE_TINY_KEY='.$key, file_get_contents($path)
+            ));   
+        } else {
+            //Append it to the bottom
+            $fp = fopen($path, 'a');
+            fwrite($fp, "\nLEAGUE_TINY_KEY=$key\n");
+            fclose($fp);
+        }
+        
         $this->info("Tiny key [$key] has been set.");
     }
 
