@@ -35,9 +35,7 @@ class TinyGenerateCommand extends Command
 
             if (file_exists($path) && getenv('LEAGUE_TINY_KEY') !== false) {
                 //Already set, so replace it.
-                file_put_contents($path, str_replace(
-                    'LEAGUE_TINY_KEY='.getenv('LEAGUE_TINY_KEY'), 'LEAGUE_TINY_KEY='.$key, file_get_contents($path)
-                ));
+                file_put_contents($path, str_replace('LEAGUE_TINY_KEY='.getenv('LEAGUE_TINY_KEY'), 'LEAGUE_TINY_KEY='.$key, file_get_contents($path)));
             } else {
                 //Append it to the bottom
                 $fp = fopen($path, 'a');
